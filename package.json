@@ -1,0 +1,61 @@
+{
+    "type": "module",
+    "name": "@remotex-labs/jet",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "author": "Garefild",
+    "version": "1.0.0-beta.0",
+    "license": "Mozilla Public License Version 2.0",
+    "description": "Jet: Run Automated Tests Anywhere, Effortlessly",
+    "homepage": "https://github.com/remotex-lab/jet",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/remotex-lab/jet.git"
+    },
+    "bugs": {
+        "url": "https://github.com/remotex-lab/jet/issues"
+    },
+    "keywords": [
+        "jet",
+        "test",
+        "jest",
+        "mocha",
+        "testing",
+        "mocking",
+        "jasmine",
+        "coverage"
+    ],
+    "engines": {
+        "node": ">=20"
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "bin": {
+        "jet": "./dist/bin.js"
+    },
+    "scripts": {
+        "dev": "nodemon src/index.ts",
+        "lint": "tsc -noEmit && eslint . -c ./eslint.config.mjs",
+        "build": "node --no-warnings esbuild.js",
+        "postbuild": "tsc --declaration --emitDeclarationOnly",
+        "test": "jest",
+        "test:coverage": "jest --coverage"
+    },
+    "devDependencies": {
+        "@swc/jest": "^0.2.36",
+        "@types/jest": "^29.5.12",
+        "@types/node": "^20.14.10",
+        "jest": "^29.7.0",
+        "eslint": "^9.6.0",
+        "nodemon": "^3.1.4",
+        "typescript": "^5.5.3",
+        "typescript-eslint": "^8.0.0-alpha.39",
+        "eslint-plugin-jsdoc": "^48.5.2"
+    },
+    "dependencies": {
+        "esbuild": "^0.23.0",
+        "source-map": "^0.7.4"
+    }
+}

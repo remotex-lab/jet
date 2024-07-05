@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+import * as process from "process";
+
+console.error(process.cwd());

@@ -1,0 +1,11 @@
+{
+    "watch": [
+        "src",
+        "includes"
+    ],
+    "ext": "ts,js",
+    "ignore": [
+        "node_modules"
+    ],
+    "exec": "node --no-warnings esbuild.js --sourcemap && node --enable-source-maps dist/index.js"
+}

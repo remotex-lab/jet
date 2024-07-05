@@ -1,0 +1,55 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "ESNext",
+        "module": "ESNext",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "rootDir": "./src",
+        "declaration": true,
+        "skipLibCheck": true,
+        "importHelpers": true,
+        "isolatedModules": false,
+        "esModuleInterop": false,
+        "moduleDetection": "force",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": [
+            "DOM",
+            "ESNext",
+        ],
+        "types": [
+            "node"
+        ],
+        "paths": {
+            "@core/*": [
+                "src/core/*"
+            ],
+            "@hooks/*": [
+                "src/hooks/*"
+            ],
+            "@errors/*": [
+                "src/errors/*"
+            ],
+            "@states/*": [
+                "src/states/*"
+            ],
+            "@components/*": [
+                "src/components/*"
+            ],
+            "@directives/*": [
+                "src/directives/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "includes/**/*"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
