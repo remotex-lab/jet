@@ -19,7 +19,6 @@ describe('parse function', () => {
         `;
 
         const result = parse(jsCode);
-        console.log(result);
 
         // Assert that the expected functions, classes, and variables are extracted
         expect(result.variables).toEqual([ 'x', 'y', 'z', 'obj' ]);

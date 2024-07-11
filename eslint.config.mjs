@@ -13,10 +13,11 @@ export default tseslint.config(
             'guard-for-in': 'off',
             'no-redeclare': 'warn',
             'padded-blocks': 'off',
-            'no-unused-vars': 'error',
+            'no-unused-vars': 'off',
             'no-invalid-this': 'warn',
             'no-dupe-class-members': 'warn',
             'newline-before-return': 'error',
+            '@typescript-eslint/no-unused-vars': 'error',
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/consistent-type-imports': ['error', { 'prefer': 'type-imports' }],
             'comma-dangle': ['error', 'never'],
@@ -79,9 +80,7 @@ export default tseslint.config(
                     'private-instance-method'
                 ]
             }]
-        }
-    },
-    {
+        },
         ignores: [
             'dist/*',
             '**/*.js',
@@ -89,5 +88,11 @@ export default tseslint.config(
             'jest.config.cjs',
             'eslint.config.mjs'
         ]
+    },
+    {
+        files: ["**/*.spec.ts"],
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off'
+        }
     }
 );

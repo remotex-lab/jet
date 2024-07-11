@@ -14,7 +14,6 @@ const externals = [
     ...Object.keys(pkg.devDependencies ?? {}),
 ];
 
-
 /**
  * Check for the --sourcemap flag
  */
@@ -43,6 +42,6 @@ build({
     },
     entryPoints: [
         'src/index.ts',
-        'src/bin.node'
+        'src/bin.ts'
     ],
 }).catch(() => process.exit(1));

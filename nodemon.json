@@ -3,7 +3,7 @@
         "src",
         "includes"
     ],
-    "ext": "ts,js",
+    "ext": "ts,js,node",
     "ignore": [
         "node_modules"
     ],

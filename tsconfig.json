@@ -29,6 +29,9 @@
             "@hooks/*": [
                 "src/hooks/*"
             ],
+            "@modules/*": [
+                "src/modules/*"
+            ],
             "@errors/*": [
                 "src/errors/*"
             ],
