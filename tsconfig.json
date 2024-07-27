@@ -26,23 +26,14 @@
             "@core/*": [
                 "src/core/*"
             ],
-            "@hooks/*": [
-                "src/hooks/*"
+            "@services/*": [
+                "src/core/services/*"
             ],
-            "@modules/*": [
-                "src/modules/*"
-            ],
-            "@errors/*": [
-                "src/errors/*"
-            ],
-            "@states/*": [
-                "src/states/*"
+            "@providers/*": [
+                "src/core/providers/*"
             ],
             "@components/*": [
                 "src/components/*"
-            ],
-            "@directives/*": [
-                "src/directives/*"
             ]
         }
     },

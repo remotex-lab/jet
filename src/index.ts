@@ -1,12 +1,14 @@
 /**
- * Export types
+ * Export Global types
  */
+
+import { getConfiguration } from '@core/providers/configuration.provider';
 
 export type * from './interfaces/index.interface';
-export type * from '@components/interfaces/configuration.interface';
 
-/**
- * Export components
- */
+const rootPath = 'C:\\Users\\Just\\OneDrive\\Desktop\\ttt';
 
-export * from '@components/configuration.component';
+process.stdout.write('\x1Bc');
+
+
+getConfiguration(rootPath);

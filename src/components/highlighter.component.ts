@@ -11,7 +11,8 @@ import type { HighlightSchemeInterface, HighlightNodeSegmentInterface } from '@c
 
 import * as ts from 'typescript';
 import { SyntaxKind } from 'typescript';
-import { formatErrorCode } from '@components/formatter.component';
+import { formatErrorCode, formatStack } from '@components/formatter.component';
+import type { StackEntryInterface } from '@services/interfaces/parse.interface';
 
 /**
  * An enum containing ANSI escape sequences for various colors.
@@ -32,6 +33,8 @@ import { formatErrorCode } from '@components/formatter.component';
 
 export const enum Colors {
     reset = '\x1b[0m',
+    red = '\x1b[38;5;197m',
+    gray = '\x1b[38;5;243m',
     darkGray = '\x1b[38;5;238m',
     lightCoral = '\x1b[38;5;203m',
     lightOrange = '\x1b[38;5;215m',
@@ -157,7 +160,7 @@ export class CodeHighlighter {
             }
 
             result.push(this.getSegmentSource(previousSegmentEnd, segment.start));
-            result.push( `${ segment.color }${ this.getSegmentSource(segment.start, segment.end) }${ segment.reset }`);
+            result.push(`${ segment.color }${ this.getSegmentSource(segment.start, segment.end) }${ segment.reset }`);
             previousSegmentEnd = segment.end;
             parent = segment;
         });
@@ -399,7 +402,9 @@ export function highlightCode(code: string, schema: Partial<HighlightSchemeInter
         for (let i = 0; i < node.getChildCount(); i++) {
             walk(node.getChildAt(i));
         }
-    } ts.forEachChild(sourceFile, walk);
+    }
+
+    ts.forEachChild(sourceFile, walk);
 
     return codeHighlighter.highlight();
 }
@@ -411,15 +416,35 @@ export function highlightCode(code: string, schema: Partial<HighlightSchemeInter
  * Then, it formats the error code with specific color settings.
  *
  * @param sourcePosition - The source position containing the code to be highlighted and formatted.
+ * @param stack - An optional highlight the stack information if provide
  * @param schema - An optional schema defining the color scheme for highlighting.
  * @returns The formatted error code with applied highlights.
  */
 
-export function FormatHighlightErrorCode(sourcePosition: PositionSourceInterface, schema: Partial<HighlightSchemeInterface> = {}): string {
+export function FormatHighlightErrorCode(sourcePosition: PositionSourceInterface, stack: Array<StackEntryInterface> = [], schema: Partial<HighlightSchemeInterface> = {}): string {
     sourcePosition.code = highlightCode(sourcePosition.code, schema);
-
-    return formatErrorCode(sourcePosition, {
+    const result = formatErrorCode(sourcePosition, {
         color: Colors.brightPink,
         reset: Colors.reset
-    });
+    }) + '\n';
+
+    if (stack.length > 0) {
+        const highlightsStack: Array<string> = [];
+        stack.forEach((entry, index) => {
+            let string = `${ Colors.gray }at ${ entry.at } (`;
+            if (index === 0) {
+                string += Colors.burntOrange;
+                entry.file = sourcePosition.source;
+            }  else {
+                string += Colors.reset;
+            }
+
+            string += `${ entry.file }${ Colors.gray }:${ entry.line }:${ entry.column })${ Colors.reset }`;
+            highlightsStack.push(string);
+        });
+
+        return result + formatStack(highlightsStack.reverse()) + '\n';
+    }
+
+    return result;
 }

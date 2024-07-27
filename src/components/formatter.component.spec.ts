@@ -1,4 +1,4 @@
-import { formatCode, formatErrorCode } from '@components/formatter.component';
+import { formatCode, formatErrorCode, formatStack } from '@components/formatter.component';
 
 describe('formatCode', () => {
     test('should format code with default options', () => {
@@ -89,5 +89,65 @@ describe('formatErrorCode', () => {
         };
 
         expect(() => formatErrorCode(<any>sourcePosition)).toThrow('Invalid line or column number.');
+    });
+});
+
+describe('formatStack', () => {
+    test('should format stack trace lines with default padding and startLine', () => {
+        const stackTrace = [
+            'Error: Something went wrong',
+            '    at Object.<anonymous> (file.js:10:20)',
+            '    at Module._compile (internal/modules/cjs/loader.js:999:30)'
+        ];
+
+        const result = formatStack(stackTrace);
+        const expected = `
+      Error: Something went wrong
+      at Object.<anonymous> (file.js:10:20)
+      at Module._compile (internal/modules/cjs/loader.js:999:30)`;
+
+        expect(result).toBe(expected);
+    });
+
+    test('should apply custom padding and startLine', () => {
+        const stackTrace = [
+            'Error: Something went wrong',
+            '    at Object.<anonymous> (file.js:10:20)',
+            '    at Module._compile (internal/modules/cjs/loader.js:999:30)'
+        ];
+
+        const result = formatStack(stackTrace, { padding: 8, startLine: 1 });
+        const expected = `
+        Error: Something went wrong
+        at Object.<anonymous> (file.js:10:20)
+        at Module._compile (internal/modules/cjs/loader.js:999:30)`;
+
+        expect(result).toBe(expected);
+    });
+
+    test('should apply custom action on triggerLine', () => {
+        const stackTrace = [
+            'Error: Something went wrong',
+            '    at Object.<anonymous> (file.js:10:20)',
+            '    at Module._compile (internal/modules/cjs/loader.js:999:30)'
+        ];
+
+        const result = formatStack(stackTrace, {
+            padding: 6,
+            startLine: 0,
+            action: {
+                triggerLine: 2,
+                callback: (lineString, padding, lineNumber) => {
+                    return `Custom formatting for line ${lineNumber}: ${lineString}`;
+                }
+            }
+        });
+
+        const expected = `
+      Error: Something went wrong
+Custom formatting for line 2:       at Object.<anonymous> (file.js:10:20)
+      at Module._compile (internal/modules/cjs/loader.js:999:30)`;
+
+        expect(result).toBe(expected);
     });
 });

@@ -11,7 +11,7 @@ import type { AnsiOptionInterface, FormatCodeInterface } from '@components/inter
  * This function takes a code string and an options object to format the code snippet.
  * It applies padding to line numbers and can trigger custom actions for specific lines.
  *
- * @param code - The source code to be formatted.
+ * @param code - The source code | stack to be formatted.
  * @param options - Configuration options for formatting the code.
  *   - `padding` (number, optional): Number of characters for line number padding. Defaults to 10.
  *   - `startLine` (number, optional): The starting line number for formatting. Defaults to 1.
@@ -116,3 +116,57 @@ export function formatErrorCode(sourcePosition: PositionSourceInterface, ansiOpt
     });
 }
 
+/**
+ * Formats an array of stack trace lines with optional line padding and custom actions.
+ *
+ * This function takes an array of stack trace lines and an options object to format the stack trace.
+ * It applies padding to each line and can trigger custom actions for specific lines.
+ *
+ * @param stacks - The array of stack trace lines to be formatted.
+ * @param options - Configuration options for formatting the stack trace.
+ *   - `padding` (number, optional): Number of characters for line number padding. Defaults to 6.
+ *   - `startLine` (number, optional): The starting line number for formatting. Defaults to 0.
+ *   - `action` (object, optional): Custom actions to apply to specific lines.
+ *     - `triggerLine` (number): The line number where the action should be triggered.
+ *     - `callback` (function): A callback function to format the line string when `triggerLine` is matched.
+ *       The callback receives the formatted line string, the padding value, and the current line number as arguments.
+ *
+ * @returns A formatted string of the stack trace with applied padding and custom actions.
+ *
+ * @example
+ * ```typescript
+ * const stackTrace = [
+ *     'Error: Something went wrong',
+ *     '    at Object.<anonymous> (file.js:10:20)',
+ *     '    at Module._compile (internal/modules/cjs/loader.js:999:30)'
+ * ];
+ *
+ * const formattedStackTrace = formatStack(stackTrace, {
+ *     padding: 8,
+ *     startLine: 1,
+ *     action: {
+ *         triggerLine: 2,
+ *         callback: (lineString, padding, lineNumber) => {
+ *             return `Custom formatting for line ${lineNumber}: ${lineString}`;
+ *         }
+ *     }
+ * });
+ * console.log(formattedStackTrace);
+ * ```
+ */
+
+export function formatStack(stacks: Array<string>, options: FormatCodeInterface = {}): string {
+    const padding = options.padding ?? 6;
+    const startLine = options.startLine ?? 0;
+
+    return '\n' + stacks.map((lineContent, index) => {
+        const currentLineNumber = index + startLine + 1;
+        const string = `${ ' '.padStart(padding) }${ lineContent.trim() }`;
+
+        if (options.action && currentLineNumber === options.action.triggerLine) {
+            return options.action.callback(string, padding, currentLineNumber);
+        }
+
+        return string;
+    }).join('\n');
+}

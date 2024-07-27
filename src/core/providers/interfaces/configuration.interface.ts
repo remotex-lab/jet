@@ -1,7 +1,3 @@
-/**
- * Interface representing the configuration options.
- */
-
 export interface ConfigurationInterface {
     /**
      * Array of strings representing the file types to be included.

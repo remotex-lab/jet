@@ -1,4 +1,5 @@
-import type { PositionSourceInterface } from '@core/services/interfaces/source.interface';
+import type { StackEntryInterface } from '@services/interfaces/parse.interface';
+import type { PositionSourceInterface } from '@services/interfaces/source.interface';
 import type { HighlightSchemeInterface } from '@components/interfaces/highlighter.interface';
 
 import * as ts from 'typescript';
@@ -83,6 +84,42 @@ describe('highlightCode', () => {
 });
 
 describe('FormatHighlightErrorCode', () => {
+    test('should format and highlight the error code with stack', () => {
+        const sourcePosition: PositionSourceInterface = {
+            code: 'const x = 10;\nconst y = x + z;\n',
+            line: 2,
+            column: 14,
+            source: 'file.js',
+            startLine: 1,
+            name: null,
+            endLine: 39
+        };
+
+        const stack: StackEntryInterface[] = [
+            {
+                at: 'main',
+                file: 'file.js',
+                line: 2,
+                column: 14,
+                executor: null
+            },
+            {
+                at: 'Module._compile',
+                file: 'internal/modules/cjs/loader.js',
+                line: 999,
+                column: 30,
+                executor: null
+            }
+        ];
+
+        // eslint-disable-next-line max-len
+        const expected = '    \u001b[38;5;197m>\u001b[0m 2 | \u001b[38;5;203mconst\u001b[0m \u001b[38;5;208mx\u001b[0m = \u001b[38;5;252m10\u001b[0m;\n        |              \u001b[38;5;197m^\u001b[0m\n      3 | \u001b[38;5;203mconst\u001b[0m \u001b[38;5;208my\u001b[0m = \u001b[38;5;208mx\u001b[0m + \u001b[38;5;208mz\u001b[0m;\n      4 | \n\n      \u001b[38;5;243mat Module._compile (\u001b[0minternal/modules/cjs/loader.js\u001b[38;5;243m:999:30)\u001b[0m\n      \u001b[38;5;243mat main (\u001b[38;5;208mfile.js\u001b[38;5;243m:2:14)\u001b[0m\n';
+        const result = FormatHighlightErrorCode(sourcePosition, stack, schema);
+
+        expect(result).toBe(expected);
+    });
+
+
     const mockSourcePosition: PositionSourceInterface = {
         code: 'const x: number = 42;',
         line: 1,
@@ -94,7 +131,7 @@ describe('FormatHighlightErrorCode', () => {
     };
 
     test('should format and highlight error code', () => {
-        const formattedCode = FormatHighlightErrorCode(mockSourcePosition, { keywordColor: Colors.brightPink });
+        const formattedCode = FormatHighlightErrorCode(mockSourcePosition, [], { keywordColor: Colors.brightPink });
         expect(formattedCode).toContain(Colors.brightPink);
         expect(formattedCode).toContain('const');
         expect(formattedCode).toContain(Colors.reset);
@@ -103,7 +140,7 @@ describe('FormatHighlightErrorCode', () => {
     test('should apply the custom schema', () => {
         const schema: Partial<HighlightSchemeInterface> = { stringColor: Colors.oliveGreen };
         mockSourcePosition.code = 'const str = "hello";';
-        const formattedCode = FormatHighlightErrorCode(mockSourcePosition, schema);
+        const formattedCode = FormatHighlightErrorCode(mockSourcePosition, [], schema);
         expect(formattedCode).toContain(Colors.oliveGreen);
         expect(formattedCode).toContain('"hello"');
         expect(formattedCode).toContain(Colors.reset);
